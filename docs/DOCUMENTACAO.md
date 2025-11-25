@@ -1347,7 +1347,7 @@ Este projeto está sob licença **MIT**. Veja [LICENSE](../LICENSE) para detalhe
 **DoubleG2s**
 
 - GitHub: [@DoubleG2s](https://github.com/DoubleG2s)
-- Email: seu-email@example.com
+- Email: gui.mail1@proton.me
 
 ---
 
