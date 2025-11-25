@@ -1356,8 +1356,7 @@ Este projeto está sob licença **MIT**. Veja [LICENSE](../LICENSE) para detalhe
 Para dúvidas ou sugestões:
 
 - 📧 Abra uma [Issue](https://github.com/DoubleG2s/agente-ia-contabilidade/issues)
-- 💬 Envie email para: seu-email@example.com
-- 🐦 Siga no Twitter: [@seu-twitter](https://twitter.com/seu-twitter)
+- 💬 Envie email para: gui.mail1@proton.me
 
 ---
 
