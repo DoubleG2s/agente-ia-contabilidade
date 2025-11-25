@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chat - Assistente Contábil</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Header */
+    .header {
+      background: white;
+      border-bottom: 1px solid #e5e7eb;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      padding: 1rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .logo-small {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 2.5rem;
+      height: 2.5rem;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: 0.5rem;
+      cursor: pointer;
+    }
+
+    .logo-small svg {
+      width: 1.25rem;
+      height: 1.25rem;
+      color: white;
+    }
+
+    .header-title {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .header-title h1 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #1f2937;
+    }
+
+    .header-title svg {
+      width: 1rem;
+      height: 1rem;
+      color: #667eea;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.5rem 1rem;
+      background: #f9fafb;
+      border-radius: 0.5rem;
+    }
+
+    .user-avatar {
+      width: 2rem;
+      height: 2rem;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 600;
+      font-size: 0.875rem;
+    }
+
+    .user-name {
+      font-weight: 500;
+      color: #374151;
+      font-size: 0.875rem;
+    }
+
+    .btn-logout {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      background: transparent;
+      border: 1px solid #e5e7eb;
+      border-radius: 0.5rem;
+      color: #6b7280;
+      font-size: 0.875rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-logout:hover {
+      background: #fee2e2;
+      border-color: #fca5a5;
+      color: #dc2626;
+    }
+
+    .btn-logout svg {
+      width: 1rem;
+      height: 1rem;
+    }
+
+    /* Chat Container */
+    .chat-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      max-width: 1000px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 1.5rem 1rem;
+      gap: 1rem;
+    }
+
+    /* Messages Area */
+    .messages-area {
+      flex: 1;
+      background: white;
+      border-radius: 1rem;
+      border: 1px solid #e5e7eb;
+      padding: 1.5rem;
+      overflow-y: auto;
+      max-height: calc(100vh - 220px);
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+
+    .empty-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      color: #9ca3af;
+      text-align: center;
+    }
+
+    .empty-state svg {
+      width: 4rem;
+      height: 4rem;
+      margin-bottom: 1rem;
+      opacity: 0.5;
+    }
+
+    .empty-state p {
+      font-size: 1.125rem;
+    }
+
+    .message {
+      display: flex;
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+      animation: slide-in 0.3s ease-out;
+    }
+
+    @keyframes slide-in {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .message-avatar {
+      width: 2.5rem;
+      height: 2.5rem;
+      border-radius: 0.75rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .message.user .message-avatar {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+
+    .message.assistant .message-avatar {
+      background: #ede9fe;
+      color: #667eea;
+    }
+
+    .message-avatar svg {
+      width: 1.25rem;
+      height: 1.25rem;
+    }
+
+    .message-content {
+      flex: 1;
+      background: #f9fafb;
+      padding: 1rem 1.25rem;
+      border-radius: 0.75rem;
+      color: #374151;
+      line-height: 1.6;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+
+    .message.assistant .message-content {
+      background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+      border: 1px solid rgba(102, 126, 234, 0.1);
+    }
+
+    .loading-indicator {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 1rem;
+      background: #f9fafb;
+      border-radius: 0.75rem;
+      margin-bottom: 1.5rem;
+      animation: pulse 1.5s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    .loading-indicator svg {
+      width: 1.25rem;
+      height: 1.25rem;
+      color: #667eea;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Input Area */
+    .input-area {
+      background: white;
+      border-radius: 1rem;
+      border: 1px solid #e5e7eb;
+      padding: 1rem;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+
+    .input-wrapper {
+      position: relative;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 60px;
+      max-height: 200px;
+      padding: 1rem;
+      padding-right: 3.5rem;
+      background: #f9fafb;
+      border: 2px solid #e5e7eb;
+      border-radius: 0.75rem;
+      font-family: inherit;
+      font-size: 1rem;
+      resize: none;
+      transition: all 0.2s;
+    }
+
+    textarea:focus {
+      outline: none;
+      border-color: #667eea;
+      background: white;
+    }
+
+    textarea:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .btn-send {
+      position: absolute;
+      right: 0.5rem;
+      bottom: 0.5rem;
+      width: 2.5rem;
+      height: 2.5rem;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border: none;
+      border-radius: 0.5rem;
+      color: white;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s;
+    }
+
+    .btn-send:hover:not(:disabled) {
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+      transform: scale(1.05);
+    }
+
+    .btn-send:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: scale(1);
+    }
+
+    .btn-send svg {
+      width: 1.25rem;
+      height: 1.25rem;
+    }
+
+    .input-hint {
+      margin-top: 0.5rem;
+      font-size: 0.75rem;
+      color: #9ca3af;
+    }
+
+    @media (max-width: 768px) {
+      .header {
+        padding: 1rem;
+      }
+
+      .user-info {
+        display: none;
+      }
+
+      .header-title h1 {
+        font-size: 1rem;
+      }
+
+      .chat-container {
+        padding: 1rem 0.5rem;
+      }
+
+      .messages-area {
+        padding: 1rem;
+        max-height: calc(100vh - 200px);
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="header-left">
+      <div class="logo-small" onclick="goToIndex()">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+        </svg>
+      </div>
+      <div class="header-title">
+        <h1>Assistente Contábil</h1>
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+        </svg>
+      </div>
+    </div>
+    <div class="header-right">
+      <div class="user-info">
+        <div class="user-avatar" id="user-avatar"></div>
+        <span class="user-name" id="user-name"></span>
+      </div>
+      <button class="btn-logout" onclick="logout()">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+        </svg>
+        Sair
+      </button>
+    </div>
+  </header>
+
+  <!-- Chat Container -->
+  <div class="chat-container">
+    <!-- Messages Area -->
+    <div class="messages-area" id="messages-area">
+      <div class="empty-state" id="empty-state">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+        </svg>
+        <p>Comece uma conversa perguntando algo!</p>
+      </div>
+    </div>
+
+    <!-- Input Area -->
+    <div class="input-area">
+      <div class="input-wrapper">
+        <textarea 
+          id="message-input" 
+          placeholder="Digite sua pergunta sobre contabilidade..."
+          rows="2"
+        ></textarea>
+        <button class="btn-send" id="send-btn" onclick="sendMessage()">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+          </svg>
+        </button>
+      </div>
+      <div class="input-hint">Pressione Enter para enviar, Shift + Enter para nova linha</div>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      // Gera um ID único para esta sessão
+      const SESSION_KEY = 'active_session_id';
+      const currentSessionId = Date.now() + Math.random();
+      
+      // Verifica se já existe outra sessão ativa
+      const existingSession = sessionStorage.getItem(SESSION_KEY);
+      
+      if (!existingSession) {
+        // Esta é a primeira vez nesta aba
+        sessionStorage.setItem(SESSION_KEY, currentSessionId);
+      }
+      
+      // Monitora mudanças no localStorage (quando outra aba faz logout)
+      window.addEventListener('storage', function(e) {
+        if (e.key === 'access_token' && e.newValue === null) {
+          // Outra aba removeu o token (fez logout)
+          console.log('🚪 Logout detectado em outra aba');
+          sessionStorage.removeItem(SESSION_KEY);
+          window.location.replace('/frontend/login.html');
+        }
+      });
+      
+      // Verifica token a cada 1 segundo
+      setInterval(function() {
+        const token = localStorage.getItem('access_token');
+        if (!token) {
+          console.log('🔒 Token não encontrado, redirecionando...');
+          sessionStorage.removeItem(SESSION_KEY);
+          window.location.replace('/frontend/login.html');
+        }
+      }, 1000);
+    })();
+    const API_URL = 'http://localhost:8000/api';
+    let isLoading = false;
+    let user = null;
+    let accessToken = null;
+    let messageCount = 0;
+
+    // Verifica autenticação
+    async function checkAuth() {
+      accessToken = localStorage.getItem('access_token');
+      const userStr = localStorage.getItem('user');
+      
+      if (!accessToken || !userStr) {
+        window.location.href = '/frontend/login.html';
+        return false;
+      }
+
+      user = JSON.parse(userStr);
+      
+      // Atualiza UI com dados do usuário
+      document.getElementById('user-name').textContent = user.full_name || user.username;
+      document.getElementById('user-avatar').textContent = (user.full_name || user.username).charAt(0).toUpperCase();
+      
+      return true;
+    }
+
+    // Inicializa
+    window.onload = async function() {
+      await checkAuth();
+      document.getElementById('message-input').focus();
+    };
+
+    // Envia mensagem
+    async function sendMessage(content) {
+      const input = document.getElementById('message-input');
+      const messageContent = content || input.value.trim();
+      
+      if (!messageContent || isLoading) return;
+
+      // Remove empty state se for a primeira mensagem
+      if (messageCount === 0) {
+        document.getElementById('empty-state').style.display = 'none';
+      }
+
+      // Adiciona mensagem do usuário
+      addMessage('user', messageContent);
+      input.value = '';
+      isLoading = true;
+      updateSendButton();
+
+      // Mostra indicador de loading
+      showLoading();
+
+      try {
+        const response = await fetch(`${API_URL}/messages/send`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${accessToken}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            message: messageContent,
+            use_tools: true
+          })
+        });
+
+        const data = await response.json();
+        hideLoading();
+
+        if (response.ok && data.success) {
+          addMessage('assistant', data.message);
+        } else {
+          addMessage('assistant', 'Desculpe, ocorreu um erro ao processar sua mensagem. Por favor, tente novamente.');
+        }
+      } catch (error) {
+        hideLoading();
+        console.error('Error:', error);
+        addMessage('assistant', 'Erro de conexão com o servidor. Por favor, tente novamente.');
+      } finally {
+        isLoading = false;
+        updateSendButton();
+        input.focus();
+      }
+    }
+
+    // Adiciona mensagem na área de chat
+    function addMessage(role, content) {
+      const messagesArea = document.getElementById('messages-area');
+      const messageDiv = document.createElement('div');
+      messageDiv.className = `message ${role}`;
+      
+      const avatarIcon = role === 'user' ? 
+        '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>' :
+        '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" /></svg>';
+
+      messageDiv.innerHTML = `
+        <div class="message-avatar">${avatarIcon}</div>
+        <div class="message-content">${escapeHtml(content)}</div>
+      `;
+      
+      messagesArea.appendChild(messageDiv);
+      messagesArea.scrollTop = messagesArea.scrollHeight;
+      messageCount++;
+    }
+
+    // Mostra indicador de loading
+    function showLoading() {
+      const messagesArea = document.getElementById('messages-area');
+      const loadingDiv = document.createElement('div');
+      loadingDiv.id = 'loading-indicator';
+      loadingDiv.className = 'loading-indicator';
+      loadingDiv.innerHTML = `
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+        </svg>
+        <span>Pensando...</span>
+      `;
+      messagesArea.appendChild(loadingDiv);
+      messagesArea.scrollTop = messagesArea.scrollHeight;
+    }
+
+    // Esconde indicador de loading
+    function hideLoading() {
+      const loadingIndicator = document.getElementById('loading-indicator');
+      if (loadingIndicator) {
+        loadingIndicator.remove();
+      }
+    }
+
+    // Atualiza estado do botão de enviar
+    function updateSendButton() {
+      const sendBtn = document.getElementById('send-btn');
+      const input = document.getElementById('message-input');
+      
+      sendBtn.disabled = isLoading || !input.value.trim();
+      input.disabled = isLoading;
+    }
+
+    // Event listener para o textarea
+    document.addEventListener('DOMContentLoaded', () => {
+      const input = document.getElementById('message-input');
+      
+      if (input) {
+        input.addEventListener('input', updateSendButton);
+        
+        input.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            sendMessage();
+          }
+        });
+      }
+    });
+
+    // Voltar para index
+    function goToIndex() {
+      window.location.href = '/frontend/index.html';
+    }
+
+    // Logout com limpeza forçada e prevenção de cache
+    function logout() {
+      console.log('🚪 Fazendo logout...');
+
+      localStorage.removeItem('access_token');
+      localStorage.removeItem('user');
+      sessionStorage.clear();
+
+      if ('caches' in window) {
+        caches.keys().then(function(names) {
+          for (let name of names) caches.delete(name);
+        });
+      }
+
+      window.location.replace('/frontend/login.html');
+      window.history.pushState(null, '', '/frontend/login.html');
+    }
+
+    // Previne voltar após logout
+    window.addEventListener('pageshow', function(event) {
+      if (event.persisted || (window.performance && window.performance.navigation.type === 2)) {
+        const token = localStorage.getItem('access_token');
+        if (!token) {
+          window.location.replace('/frontend/login.html');
+        }
+      }
+    });
+
+    // Previne navegação com o botão voltar
+    window.history.pushState(null, null, window.location.href);
+    window.addEventListener('popstate', function() {
+      const token = localStorage.getItem('access_token');
+      if (!token) {
+        window.location.replace('/frontend/login.html');
+      } else {
+        window.history.pushState(null, null, window.location.href);
+      }
+    });
+
+        // Escape HTML
+        function escapeHtml(text) {
+          const div = document.createElement('div');
+          div.textContent = text;
+          return div.innerHTML;
+        }
+  </script>
+</body>
+</html>

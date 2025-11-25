@@ -1,5 +1,10 @@
 from pydantic_settings import BaseSettings
 from functools import lru_cache
+from pathlib import Path
+
+# Encontra a raiz do projeto
+BASE_DIR = Path(__file__).resolve().parent.parent
+ENV_FILE = BASE_DIR / ".env"
 
 class Settings(BaseSettings):
     """Configurações da aplicação"""
@@ -11,12 +16,16 @@ class Settings(BaseSettings):
     
     # OpenAI Config
     OPENAI_API_KEY: str
-    OPENAI_MODEL: str = "gpt-4-turbo-preview"
+    OPENAI_MODEL: str = "gpt-4o-mini"
     MAX_TOKENS: int = 1500
     TEMPERATURE: float = 0.7
     
     # Database
     DATABASE_URL: str = "sqlite+aiosqlite:///./contabilidade_agent.db"
+    
+    # ✅ NOVO - Autenticação
+    SECRET_KEY: str # Mude em produção!
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 7  # 7 dias
     
     # Sistema Prompt para o agente
     SYSTEM_PROMPT: str = """Você é um assistente especializado em contabilidade brasileira.
@@ -38,7 +47,8 @@ class Settings(BaseSettings):
     """
     
     class Config:
-        env_file = ".env"
+        env_file = str(ENV_FILE)
+        env_file_encoding = 'utf-8'
         case_sensitive = True
 
 @lru_cache()

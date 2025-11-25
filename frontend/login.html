@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - Assistente Contábil</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Elementos decorativos */
+    .bg-decoration-1 {
+      position: fixed;
+      top: 5rem;
+      left: 2.5rem;
+      width: 18rem;
+      height: 18rem;
+      background: rgba(99, 102, 241, 0.1);
+      border-radius: 50%;
+      filter: blur(60px);
+      animation: pulse-glow 4s ease-in-out infinite;
+    }
+
+    .bg-decoration-2 {
+      position: fixed;
+      bottom: 5rem;
+      right: 2.5rem;
+      width: 24rem;
+      height: 24rem;
+      background: rgba(139, 92, 246, 0.1);
+      border-radius: 50%;
+      filter: blur(60px);
+      animation: pulse-glow 4s ease-in-out infinite;
+      animation-delay: 1s;
+    }
+
+    @keyframes pulse-glow {
+      0%, 100% { opacity: 0.5; transform: scale(1); }
+      50% { opacity: 0.8; transform: scale(1.1); }
+    }
+
+    @keyframes slide-up {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .container {
+      width: 100%;
+      max-width: 28rem;
+      animation: slide-up 0.6s ease-out;
+      position: relative;
+      z-index: 10;
+    }
+
+    /* Header/Logo */
+    .header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .logo-container {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .logo-wrapper {
+      position: relative;
+      animation: float 3s ease-in-out infinite;
+    }
+
+    .logo-glow {
+      position: absolute;
+      inset: 0;
+      background: rgba(99, 102, 241, 0.3);
+      filter: blur(40px);
+      border-radius: 50%;
+    }
+
+    .logo {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 5rem;
+      height: 5rem;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: 1rem;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    }
+
+    .logo svg {
+      width: 2.5rem;
+      height: 2.5rem;
+      color: white;
+    }
+
+    h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #1f2937;
+      margin-bottom: 0.5rem;
+    }
+
+    .subtitle {
+      color: #6b7280;
+      font-size: 1rem;
+    }
+
+    /* Card */
+    .card {
+      background: white;
+      border: 1px solid #e5e7eb;
+      border-radius: 1rem;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+      padding: 2rem;
+      transition: box-shadow 0.3s ease;
+    }
+
+    .card:hover {
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Form */
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    label {
+      display: block;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: #374151;
+      margin-bottom: 0.5rem;
+    }
+
+    .label-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .forgot-link {
+      font-size: 0.875rem;
+      color: #667eea;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .forgot-link:hover {
+      color: #764ba2;
+    }
+
+    .input-wrapper {
+      position: relative;
+    }
+
+    .input-icon {
+      position: absolute;
+      left: 0.75rem;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 1.25rem;
+      height: 1.25rem;
+      color: #9ca3af;
+    }
+
+    input {
+      width: 100%;
+      height: 3rem;
+      padding-left: 2.5rem;
+      padding-right: 1rem;
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+      border-radius: 0.5rem;
+      font-size: 1rem;
+      transition: all 0.2s;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: #667eea;
+      background: white;
+    }
+
+    /* Botão */
+    .btn {
+      width: 100%;
+      height: 3rem;
+      border: none;
+      border-radius: 0.5rem;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
+      transform: scale(1.02);
+    }
+
+    .btn-primary:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .btn-outline {
+      background: transparent;
+      border: 1px solid #e5e7eb;
+      color: #374151;
+    }
+
+    .btn-outline:hover {
+      border-color: #667eea;
+      background: rgba(102, 126, 234, 0.05);
+    }
+
+    .arrow-icon {
+      width: 1.25rem;
+      height: 1.25rem;
+      transition: transform 0.3s;
+    }
+
+    .btn:hover .arrow-icon {
+      transform: translateX(4px);
+    }
+
+    .spinner {
+      width: 1.25rem;
+      height: 1.25rem;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+    }
+
+    /* Divisor */
+    .divider {
+      position: relative;
+      margin: 1.5rem 0;
+      text-align: center;
+    }
+
+    .divider::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: #e5e7eb;
+    }
+
+    .divider span {
+      position: relative;
+      background: white;
+      padding: 0 1rem;
+      color: #9ca3af;
+      font-size: 0.875rem;
+    }
+
+    /* Mensagem de erro */
+    .error-message {
+      background: #fee2e2;
+      color: #991b1b;
+      padding: 0.75rem 1rem;
+      border-radius: 0.5rem;
+      font-size: 0.875rem;
+      margin-bottom: 1rem;
+      display: none;
+    }
+
+    .error-message.show {
+      display: block;
+    }
+
+    /* Footer */
+    .footer-text {
+      text-align: center;
+      font-size: 0.875rem;
+      color: #6b7280;
+      margin-top: 1.5rem;
+    }
+
+    .footer-link {
+      color: #667eea;
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+
+    .footer-link:hover {
+      color: #764ba2;
+    }
+
+    @media (max-width: 640px) {
+      h1 {
+        font-size: 1.75rem;
+      }
+      .card {
+        padding: 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Elementos decorativos -->
+  <div class="bg-decoration-1"></div>
+  <div class="bg-decoration-2"></div>
+
+  <div class="container">
+    <!-- Header -->
+    <div class="header">
+      <div class="logo-container">
+        <div class="logo-wrapper">
+          <div class="logo-glow"></div>
+          <div class="logo">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+            </svg>
+          </div>
+        </div>
+      </div>
+      <h1>Bem-vindo de volta</h1>
+      <p class="subtitle">Entre para acessar seu assistente contábil</p>
+    </div>
+
+    <!-- Card de Login -->
+    <div class="card">
+      <div id="error-message" class="error-message"></div>
+      
+      <form id="login-form">
+        <!-- Campo Email/Username -->
+        <div class="form-group">
+          <label for="username">Email ou Usuário</label>
+          <div class="input-wrapper">
+            <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+            </svg>
+            <input type="text" id="username" placeholder="seu@email.com ou usuario" required autocomplete="username">
+          </div>
+        </div>
+
+        <!-- Campo Senha -->
+        <div class="form-group">
+          <div class="label-row">
+            <label for="password">Senha</label>
+            <a href="#" class="forgot-link">Esqueceu a senha?</a>
+          </div>
+          <div class="input-wrapper">
+            <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+            </svg>
+            <input type="password" id="password" placeholder="••••••••" required autocomplete="current-password">
+          </div>
+        </div>
+
+        <!-- Botão de Login -->
+        <button type="submit" class="btn btn-primary" id="login-btn">
+          <span id="btn-text">
+            Entrar
+            <svg class="arrow-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+            </svg>
+          </span>
+        </button>
+      </form>
+
+      <!-- Divisor -->
+      <div class="divider">
+        <span>ou</span>
+      </div>
+
+      <!-- Botão Google (opcional) -->
+      <button type="button" class="btn btn-outline">
+        <svg style="width: 1.25rem; height: 1.25rem; margin-right: 0.5rem;" viewBox="0 0 24 24">
+          <path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+          <path fill="currentColor" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+          <path fill="currentColor" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+          <path fill="currentColor" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+        </svg>
+        Continuar com Google
+      </button>
+    </div>
+
+    <!-- Footer -->
+    <p class="footer-text">
+      Não tem uma conta? 
+      <a href="/frontend/register.html" class="footer-link">Criar conta gratuita</a>
+    </p>
+  </div>
+
+<script>
+  const API_URL = 'http://localhost:8000/api';
+  const form = document.getElementById('login-form');
+  const btnText = document.getElementById('btn-text');
+  const loginBtn = document.getElementById('login-btn');
+  const errorMessage = document.getElementById('error-message');
+
+  // Função para mostrar erro
+  function showError(message) {
+    errorMessage.textContent = message;
+    errorMessage.classList.add('show');
+    setTimeout(() => {
+      errorMessage.classList.remove('show');
+    }, 5000);
+  }
+
+  // Função de login
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const username = document.getElementById('username').value.trim();
+    const password = document.getElementById('password').value;
+
+    // Desabilita botão e mostra loading
+    loginBtn.disabled = true;
+    btnText.innerHTML = `
+      <div class="spinner"></div>
+      Entrando...
+    `;
+
+    try {
+      const response = await fetch(`${API_URL}/auth/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: `username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.access_token) {
+        // Salva token e dados do usuário
+        localStorage.setItem('access_token', data.access_token);
+        localStorage.setItem('user', JSON.stringify(data.user));
+
+        // ✅ CORRIGIDO: Redireciona para o INDEX (welcome screen)
+        window.location.href = '/frontend/index.html';
+      } else {
+        showError(data.detail || 'Credenciais inválidas');
+        loginBtn.disabled = false;
+        btnText.innerHTML = `
+          Entrar
+          <svg class="arrow-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+          </svg>
+        `;
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+      showError('Erro de conexão com o servidor');
+      loginBtn.disabled = false;
+      btnText.innerHTML = `
+        Entrar
+        <svg class="arrow-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+        </svg>
+      `;
+    }
+  });
+</script>
+
+</body>
+</html>
